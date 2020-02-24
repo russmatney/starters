@@ -1,0 +1,70 @@
+(ns fullstack.ui.events
+  (:require
+   [re-frame.core :as rf]
+   [pneumatic-tubes.core :as tubes]
+   [fullstack.ui.db :as db]))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Tubes setup
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn on-disconnect []
+  (.log js/console "Connection with server lost."))
+
+(defn on-connect-failed []
+  (.log js/console "Connection with server failed."))
+
+(defn on-connect []
+  (.log js/console "Connection with server started."))
+
+(defn on-receive [event-v]
+  (.log js/console (str "Event received from server: " event-v))
+  (rf/dispatch event-v))
+
+(def tube
+  (tubes/tube
+    (str "ws://localhost:8080/ws")
+    on-receive
+    on-connect
+    on-disconnect
+    on-connect-failed))
+
+(def send-to-server
+  (rf/after (fn [_ v] (tubes/dispatch tube v))))
+
+(rf/reg-fx
+  :tubes-create
+  (fn [_event-v]
+    (tubes/create! tube)))
+
+(rf/reg-fx
+  :tubes-destroy
+  (fn [_event-v] (tubes/destroy! tube)))
+
+(rf/reg-fx
+  :tubes-dispatch
+  (fn [event-v] (tubes/dispatch tube event-v)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Init App
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(rf/reg-event-fx
+  ::init
+  (fn [_]
+    {:db           db/initial-db
+     :tubes-create [[::list-files]]
+     :dispatch-n   [[::list-files]]}))
+
+(rf/reg-event-fx
+  ::list-files
+  [send-to-server]
+  (fn [_cofx _event]
+    {:tubes-dispatch [:list-files]}))
+
+(rf/reg-event-fx
+  :list-files.success
+  [rf/trim-v]
+  (fn [{:keys [db]} [files]]
+    {:db (assoc db :files files)}))

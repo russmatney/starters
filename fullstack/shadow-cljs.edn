@@ -1,0 +1,21 @@
+{:deps {:aliases [:nrepl :cljs]}
+
+ :source-paths ["src" "test"]
+
+ :nrepl {:port 4001
+         :middleware
+         [cider-nrepl.plugin/middleware
+          refactor-nrepl.middleware/wrap-refactor]}
+
+ :builds
+ {:app {:target          :browser
+        :modules         {:main {:entries [fullstack.ui.core]}}
+        :output-dir      "public/js/compiled"
+        :asset-path      "/js/compiled"
+        :closure-defines {}
+        :devtools
+        {:http-root   "public"
+         :http-port   4000
+         :loader-mode :eval
+         :after-load  fullstack.ui.core/mount-root
+         :preloads    [devtools.preload]}}}}
