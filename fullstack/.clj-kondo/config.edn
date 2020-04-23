@@ -1,0 +1,4 @@
+{:lint-as
+ {systemic.core/defsys     clojure.core/def
+  devcards.core/defcard    clojure.core/def
+  devcards.core/defcard-rg clojure.core/def}}

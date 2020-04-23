@@ -14,6 +14,12 @@
   (fn [tube event]
     (tubes/dispatch *transmitter* tube event)))
 
+(defn list-files []
+  [{:file/name         "nother-example.org"
+    :file/last-touched "yesterday"}
+   {:file/name         "example.org"
+    :file/last-touched "yesterday"}])
+
 (defsys *rx*
   "Receiver for handling web events"
   (tubes/receiver
@@ -24,22 +30,19 @@
 
      :list-files
      (fn [tube _]
-       (def --tube tube)
-       (*tx* tube [:list-files.success
-                   [{:file/name         "nother-example.org"
-                     :file/last-touched "yesterday"}
-                    {:file/name         "example.org"
-                     :file/last-touched "yesterday"}]])
+       (println "list-files hit on server")
+       (*tx* tube [:list-files.success (list-files)])
        tube)}))
 
 (defsys *server*
   :start
-  (server/run-server (websocket-handler *rx*) {:port 8080})
+  (server/run-server (websocket-handler *rx*) {:port 8999})
   :stop
   (*server*))
 
 (comment
   (sys/start!)
   (sys/state `*server*)
+  (sys/start! `*server*)
   (sys/restart!)
   (sys/stop!))

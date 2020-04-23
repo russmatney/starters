@@ -18,4 +18,22 @@
          :http-port   4000
          :loader-mode :eval
          :after-load  fullstack.ui.core/mount-root
-         :preloads    [devtools.preload]}}}}
+         :preloads    [devtools.preload]}}
+
+  :devcards
+  {:target           :browser
+   :output-dir       "public/js/devcards"
+   :asset-path       "/js/devcards"
+   :modules          {:main {:entries [fullstack.ui.devcards]}}
+   :js-options
+   {:resolve
+    {"react"     {:export-globals ["React"]}
+     "react-dom" {:export-globals ["ReactDOM"]}}}
+   :devtools         {:http-port        4002
+                      :http-root        "public"
+                      :http-handler     shadow.http.push-state/handle
+                      :push-state/index "devcards.html"
+                      :after-load       fullstack.ui.devcards/main
+                      :repl-pprint      true}
+   :compiler-options {:devcards true}}
+  }}

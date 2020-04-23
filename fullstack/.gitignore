@@ -24,3 +24,5 @@ public/css/screen.css
 public/js/compiled
 target
 tmp/
+.clj-kondo/.cache/
+public/js/devcards

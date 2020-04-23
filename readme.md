@@ -20,15 +20,29 @@ Frontend:
 - Shadow-cljs
 - Re-frame
 - Reagent
+- Devcards
 
 Backend:
 
 - Systemic
 - PneumaticTubes
+- dev alias undos java-error-tossing optimizations
 
-#### Install Deps
+### TODO Features
+
+- Reitit router
+- .dir-locals
+- tick time support across tubes
+- tubes fork that supports custom handlers
+- embedded nrepl on backend
+- user ns starts server
+- env-based server host and port
+- atom-watcher pattern for pushing results to fe
+
+### Install Deps
 
 ```sh
+cd fullstack
 yarn install
 shadow-cljs compile app
 ```

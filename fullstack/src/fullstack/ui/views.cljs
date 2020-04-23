@@ -7,8 +7,9 @@
   []
   (let [files @(rf/subscribe [::subs/files])]
     [:div
-     {:style {:display "flex"
+     {:style {:display        "flex"
               :flex-direction "column"}}
+     [:div "Files"]
      (for [file files]
        ^{:key (:file/name file)}
        [:div

@@ -23,7 +23,7 @@
 
 (def tube
   (tubes/tube
-    (str "ws://localhost:8080/ws")
+    (str "ws://localhost:8999/ws")
     on-receive
     on-connect
     on-disconnect
@@ -38,10 +38,6 @@
     (tubes/create! tube)))
 
 (rf/reg-fx
-  :tubes-destroy
-  (fn [_event-v] (tubes/destroy! tube)))
-
-(rf/reg-fx
   :tubes-dispatch
   (fn [event-v] (tubes/dispatch tube event-v)))
 
@@ -54,8 +50,7 @@
   ::init
   (fn [_]
     {:db           db/initial-db
-     :tubes-create [[::list-files]]
-     :dispatch-n   [[::list-files]]}))
+     :tubes-create true}))
 
 (rf/reg-event-fx
   ::list-files
