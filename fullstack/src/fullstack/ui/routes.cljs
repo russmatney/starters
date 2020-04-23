@@ -1,12 +1,13 @@
 (ns fullstack.ui.routes
   (:require
    [re-frame.core :as rf]
-   [reitit.coercion.spec]
+   [reitit.coercion.malli]
    [reitit.frontend]
    [reitit.frontend.easy :as rfe]
    [reitit.frontend.controllers :as rfc]
    [fullstack.ui.views.home :as home]
-   [fullstack.ui.views.files :as files]))
+   [fullstack.ui.views.files :as files]
+   [fullstack.ui.events :as events]))
 
 ;;; Subs
 
@@ -51,18 +52,34 @@
                 (println "Leaving home page"))}]}]
    ["files"
     {:name      :routes/files
-     :view      files/page
+     :view      files/files-page
      :link-text "Files"
      :controllers
      [{:start (fn []
-                (println "Entering files page"))
+                (println "Entering files page")
+                (rf/dispatch [::events/fetch-files]))
        :stop  (fn []
-                (println "Leaving files page"))}]}]])
+                (println "Leaving files page"))}]}]
+   ["files/:id"
+    {:name      :routes/file
+     :view      files/file-page
+     :link-text "Files"
+     :coercion  reitit.coercion.malli/coercion
+     :params    {:path [:map [:id string?]]}
+     :controllers
+     [{:parameters {:path [:id]}
+       :start      (fn [{:keys [path]}]
+                     (let [file-id (:id path)]
+                       (println "Entering files/:id page for id" file-id)
+                       (rf/dispatch [::events/fetch-files])
+                       (rf/dispatch [::events/set-active-file-id file-id])))
+       :stop       (fn []
+                     (println "Leaving files page"))}]}]])
 
 (def router
   (reitit.frontend/router
     routes
-    {:data {:coercion reitit.coercion.spec/coercion}}))
+    {:data {:coercion reitit.coercion.malli/coercion}}))
 
 (defn on-navigate [new-match]
   (when new-match

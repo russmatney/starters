@@ -14,10 +14,12 @@
   (fn [tube event]
     (tubes/dispatch *transmitter* tube event)))
 
-(defn list-files []
-  [{:file/name         "nother-example.org"
+(defn fetch-files []
+  [{:file/id           "1"
+    :file/name         "nother-example.org"
     :file/last-touched "yesterday"}
-   {:file/name         "example.org"
+   {:file/id           "2"
+    :file/name         "example.org"
     :file/last-touched "yesterday"}])
 
 (defsys *rx*
@@ -28,10 +30,10 @@
        (*tx* tube [:init.success {}])
        tube)
 
-     :list-files
+     :fetch-files
      (fn [tube _]
-       (println "list-files hit on server")
-       (*tx* tube [:list-files.success (list-files)])
+       (println "fetch-files hit on server")
+       (*tx* tube [:fetch-files.success (fetch-files)])
        tube)}))
 
 (defsys *server*

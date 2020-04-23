@@ -53,13 +53,19 @@
      :tubes-create true}))
 
 (rf/reg-event-fx
-  ::list-files
+  ::fetch-files
   [send-to-server]
   (fn [_cofx _event]
-    {:tubes-dispatch [:list-files]}))
+    {:tubes-dispatch [:fetch-files]}))
 
 (rf/reg-event-fx
-  :list-files.success
+  :fetch-files.success
   [rf/trim-v]
   (fn [{:keys [db]} [files]]
     {:db (assoc db :files files)}))
+
+(rf/reg-event-db
+  ::set-active-file-id
+  [rf/trim-v]
+  (fn [db [file-id]]
+    (assoc db :active-file-id file-id)))
