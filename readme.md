@@ -21,6 +21,7 @@ Frontend:
 - Re-frame
 - Reagent
 - Devcards
+- Reitit router
 
 Backend:
 
@@ -28,10 +29,12 @@ Backend:
 - PneumaticTubes
 - dev alias undos java-error-tossing optimizations
 
+Both:
+
+- Prompt-less cider jack-in via .dir-local vars
+
 ### TODO Features
 
-- Reitit router
-- .dir-locals
 - tick time support across tubes
 - tubes fork that supports custom handlers
 - embedded nrepl on backend
