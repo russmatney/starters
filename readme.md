@@ -2,7 +2,7 @@
 
 A handful of starter templates for miscellaneous projects
 
-[Related blob post](http://russmatney.com/2020-02-21-clojure-repo-starters/).
+[Related blog post](http://russmatney.com/2020-02-21-clojure-repo-starters/).
 
 ## TODO ClojureScript Frontend
 
